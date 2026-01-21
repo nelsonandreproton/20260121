@@ -105,6 +105,34 @@ npm run dev
 http://localhost:3000
 ```
 
+## 🚀 Deploy em Produção
+
+Esta aplicação requer um servidor Node.js e **NÃO** pode ser hospedada no GitHub Pages (apenas sites estáticos).
+
+### Plataformas Recomendadas
+
+| Plataforma | Free Tier | Database | Deploy Automático | Recomendação |
+|------------|-----------|----------|-------------------|--------------|
+| **Railway** | ✅ 500h/mês | ✅ Persistente | ✅ Sim | 🥇 **Melhor Opção** |
+| **Render** | ✅ Limitado | ⚠️ Pago | ✅ Sim | 🥈 Boa opção |
+| **Vercel** | ✅ Serverless | ❌ Requer DB externo | ✅ Sim | ⚠️ Complexo |
+| **VPS** | 💰 Pago | ✅ Total | ❌ Manual | 🥉 Controle total |
+
+### Deploy Rápido no Railway (Recomendado)
+
+1. **Criar conta:** https://railway.app (login com GitHub)
+2. **Novo Projeto:** Deploy from GitHub → selecione este repositório
+3. **Configurar variáveis:**
+   ```env
+   NODE_ENV=production
+   CORS_ORIGIN=https://kcnews.up.railway.app
+   LOG_LEVEL=info
+   ```
+4. **Adicionar Volume:** Settings → Volumes → Mount Path: `/app/data`
+5. **Deploy automático** acontece via Git push!
+
+📖 **Guia Completo:** Veja [DEPLOYMENT.md](./DEPLOYMENT.md) para instruções detalhadas de todas as plataformas.
+
 ## 📁 Estrutura do Projeto
 
 ```
@@ -532,5 +560,6 @@ Desenvolvido com ❤️ para os fãs do Kansas City Chiefs!
 ---
 
 **Documentos Relacionados:**
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - 🚀 **Guia completo de deployment**
 - [SECURITY_REVIEW.md](./SECURITY_REVIEW.md) - Análise detalhada de segurança
 - [.env.example](./.env.example) - Template de configuração
