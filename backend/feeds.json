@@ -1,0 +1,24 @@
+{
+  "feeds": [
+    {
+      "name": "Chiefs Official",
+      "url": "https://www.chiefs.com/news.rss",
+      "source": "Chiefs.com"
+    },
+    {
+      "name": "Arrowhead Pride",
+      "url": "https://www.arrowheadpride.com/rss/current",
+      "source": "Arrowhead Pride"
+    },
+    {
+      "name": "Bleacher Report",
+      "url": "https://bleacherreport.com/kansas-city-chiefs/feed",
+      "source": "Bleacher Report"
+    },
+    {
+      "name": "CBS Sports",
+      "url": "https://www.cbssports.com/rss/headlines/nfl/kansas-city-chiefs/",
+      "source": "CBS Sports"
+    }
+  ]
+}

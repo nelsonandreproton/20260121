@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kansas City Chiefs - News Timeline</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>🏈 Kansas City Chiefs News</h1>
+                <p class="subtitle">Live news timeline from multiple sources</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat">
+                    <span class="stat-value" id="totalArticles">0</span>
+                    <span class="stat-label">Total Articles</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="last24h">0</span>
+                    <span class="stat-label">Last 24h</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="controls">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-source="all">All Sources</button>
+                <button class="filter-btn" data-source="Chiefs.com">Chiefs.com</button>
+                <button class="filter-btn" data-source="Arrowhead Pride">Arrowhead Pride</button>
+                <button class="filter-btn" data-source="Bleacher Report">Bleacher Report</button>
+                <button class="filter-btn" data-source="CBS Sports">CBS Sports</button>
+            </div>
+            <button class="refresh-btn" id="refreshBtn">
+                <span class="refresh-icon">↻</span> Refresh
+            </button>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="timeline">
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading Chiefs news...</p>
+            </div>
+            <div id="timeline" class="timeline-content"></div>
+            <div id="loadMore" class="load-more" style="display: none;">
+                <button id="loadMoreBtn">Load More Articles</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Chiefs News Aggregator - Aggregating news from official and fan sources</p>
+            <p class="update-time">Last updated: <span id="lastUpdate">Never</span></p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

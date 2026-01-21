@@ -1,0 +1,23 @@
+{
+  "name": "chiefs-news-aggregator",
+  "version": "1.0.0",
+  "description": "Kansas City Chiefs news timeline aggregator",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "keywords": ["chiefs", "nfl", "news", "aggregator"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "rss-parser": "^3.13.0",
+    "better-sqlite3": "^9.2.2",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
