@@ -1,33 +1,60 @@
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 
 class NewsDatabase {
   constructor() {
-    const dbPath = path.join(__dirname, '..', 'news.db');
-    this.db = new Database(dbPath);
-    this.init();
+    try {
+      const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'news.db');
+
+      // Ensure database directory exists
+      const dbDir = path.dirname(dbPath);
+      if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+      }
+
+      this.db = new Database(dbPath, {
+        verbose: process.env.NODE_ENV === 'development' ? console.log : null
+      });
+
+      // Enable WAL mode for better concurrency
+      this.db.pragma('journal_mode = WAL');
+
+      this.init();
+    } catch (error) {
+      console.error('Failed to initialize database:', error);
+      throw error;
+    }
   }
 
   init() {
-    // Create articles table
-    this.db.exec(`
-      CREATE TABLE IF NOT EXISTS articles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        link TEXT UNIQUE NOT NULL,
-        description TEXT,
-        pubDate TEXT,
-        source TEXT,
-        imageUrl TEXT,
-        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
+    try {
+      // Create articles table
+      this.db.exec(`
+        CREATE TABLE IF NOT EXISTS articles (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          link TEXT UNIQUE NOT NULL,
+          description TEXT,
+          pubDate TEXT,
+          source TEXT,
+          imageUrl TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
 
-    // Create index for faster queries
-    this.db.exec(`
-      CREATE INDEX IF NOT EXISTS idx_pubDate ON articles(pubDate DESC);
-      CREATE INDEX IF NOT EXISTS idx_source ON articles(source);
-    `);
+      // Create indexes for faster queries
+      this.db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_pubDate ON articles(pubDate DESC);
+        CREATE INDEX IF NOT EXISTS idx_source ON articles(source);
+        CREATE INDEX IF NOT EXISTS idx_createdAt ON articles(createdAt DESC);
+      `);
+
+      console.log('Database initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize database schema:', error);
+      throw error;
+    }
   }
 
   insertArticle(article) {

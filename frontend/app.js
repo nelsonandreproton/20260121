@@ -124,6 +124,36 @@ function renderArticles(articles, append = false) {
     });
 }
 
+// Sanitize HTML content to prevent XSS
+function sanitizeHTML(html) {
+    if (typeof DOMPurify !== 'undefined') {
+        return DOMPurify.sanitize(html, {
+            ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
+            ALLOWED_ATTR: ['href', 'target', 'rel']
+        });
+    }
+    // Fallback: basic HTML escape
+    const div = document.createElement('div');
+    div.textContent = html;
+    return div.innerHTML;
+}
+
+// Sanitize URL to prevent javascript: and data: URLs
+function sanitizeURL(url) {
+    if (!url || typeof url !== 'string') return '#';
+
+    try {
+        const urlObj = new URL(url);
+        // Only allow http and https protocols
+        if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+            return url;
+        }
+    } catch (e) {
+        // Invalid URL
+    }
+    return '#';
+}
+
 // Create article HTML element
 function createArticleElement(article) {
     const div = document.createElement('div');
@@ -132,8 +162,16 @@ function createArticleElement(article) {
     const date = new Date(article.pubDate);
     const formattedDate = formatDate(date);
 
-    const imageHtml = article.imageUrl
-        ? `<img src="${article.imageUrl}" alt="${article.title}" class="article-image" onerror="this.style.display='none'">`
+    // Sanitize all data
+    const safeTitle = sanitizeHTML(article.title || 'No title');
+    const safeSource = sanitizeHTML(article.source || 'Unknown');
+    const safeDescription = sanitizeHTML(truncateText(article.description || '', 200));
+    const safeLink = sanitizeURL(article.link);
+    const safeImageUrl = sanitizeURL(article.imageUrl);
+
+    // Build HTML with sanitized data
+    const imageHtml = article.imageUrl && safeImageUrl !== '#'
+        ? `<img src="${safeImageUrl}" alt="" class="article-image" onerror="this.style.display='none'" loading="lazy">`
         : '';
 
     div.innerHTML = `
@@ -141,16 +179,16 @@ function createArticleElement(article) {
         <div class="timeline-card">
             <div class="article-header">
                 <div class="article-meta">
-                    <span class="article-source">${article.source}</span>
+                    <span class="article-source">${safeSource}</span>
                     <span class="article-date">${formattedDate}</span>
                 </div>
                 ${imageHtml}
             </div>
             <h2 class="article-title">
-                <a href="${article.link}" target="_blank" rel="noopener noreferrer">${article.title}</a>
+                <a href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeTitle}</a>
             </h2>
-            <p class="article-description">${truncateText(article.description, 200)}</p>
-            <a href="${article.link}" target="_blank" rel="noopener noreferrer" class="article-link">
+            <p class="article-description">${safeDescription}</p>
+            <a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="article-link">
                 Read Full Article →
             </a>
         </div>

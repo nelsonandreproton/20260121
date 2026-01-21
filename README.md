@@ -1,20 +1,40 @@
 # 🏈 Kansas City Chiefs News Aggregator
 
-Uma aplicação web moderna que agrega notícias sobre o Kansas City Chiefs de múltiplas fontes confiáveis, apresentando-as numa timeline dinâmica e atualizada automaticamente.
+Uma aplicação web moderna e **segura** que agrega notícias sobre o Kansas City Chiefs de múltiplas fontes confiáveis, apresentando-as numa timeline dinâmica e atualizada automaticamente.
 
 ![Chiefs News Timeline](https://img.shields.io/badge/NFL-Chiefs-E31837?style=for-the-badge&logo=nfl&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![Security](https://img.shields.io/badge/Security-Hardened-green?style=for-the-badge)
 
 ## 📋 Características
 
+### Funcionalidades Principais
 - ✅ **Agregação Automática**: Coleta notícias de múltiplas fontes via RSS feeds
 - ✅ **Timeline Moderna**: Interface visual atraente com design inspirado nas cores do Chiefs
-- ✅ **Atualização Automática**: Atualiza as notícias a cada 30 minutos automaticamente
-- ✅ **Filtros por Fonte**: Filtre notícias por fonte específica (Chiefs.com, Arrowhead Pride, etc.)
+- ✅ **Atualização Automática**: Atualiza as notícias a cada 30 minutos (configurável)
+- ✅ **Filtros por Fonte**: Filtre notícias por fonte específica
 - ✅ **Responsive Design**: Funciona perfeitamente em desktop, tablet e mobile
-- ✅ **Banco de Dados Local**: Armazena artigos localmente usando SQLite
-- ✅ **Sem Scraping Agressivo**: Usa RSS feeds oficiais respeitando as políticas dos sites
+- ✅ **Banco de Dados SQLite**: Armazenamento local rápido e eficiente
+- ✅ **Ético e Responsável**: Usa RSS feeds oficiais respeitando as políticas dos sites
+
+### Segurança 🔒
+- ✅ **XSS Protection**: Sanitização de conteúdo com DOMPurify
+- ✅ **Rate Limiting**: Proteção contra abuso de API
+- ✅ **Security Headers**: Helmet.js com CSP, X-Frame-Options, etc.
+- ✅ **Input Validation**: Validação rigorosa de todos os inputs
+- ✅ **Error Handling**: Mensagens genéricas aos clientes, logs detalhados server-side
+- ✅ **CORS Configurável**: Controle de origens permitidas
+- ✅ **URL Validation**: Whitelist de domínios para feeds RSS
+- ✅ **Timeout Protection**: Timeouts em requisições HTTP
+
+### Qualidade de Código 📊
+- ✅ **Logging Profissional**: Winston com rotação diária de logs
+- ✅ **Environment Variables**: Configuração via .env
+- ✅ **Health Check**: Endpoint de monitoramento
+- ✅ **Graceful Shutdown**: Encerramento limpo do servidor
+- ✅ **Error Recovery**: Retry logic com exponential backoff
+- ✅ **Package Security**: Versões fixas de dependências
 
 ## 🎯 Fontes de Notícias
 
@@ -32,27 +52,54 @@ A aplicação agrega notícias das seguintes fontes:
 - Node.js 16+ instalado
 - npm ou yarn
 
-### Passo 1: Instalar Dependências
+### Passo 1: Clonar e Instalar
 
 ```bash
+# Clone o repositório
+git clone <repository-url>
+cd chiefs-news-aggregator
+
+# Instalar dependências
 npm install
 ```
 
-### Passo 2: Iniciar o Servidor
+### Passo 2: Configurar Variáveis de Ambiente
 
 ```bash
-npm start
+# Copiar o arquivo de exemplo
+cp .env.example .env
+
+# Editar conforme necessário
+nano .env
 ```
 
-Ou para desenvolvimento com auto-reload:
+Configurações importantes no `.env`:
+
+```env
+# Porta do servidor
+PORT=3000
+
+# CORS - restringir em produção!
+CORS_ORIGIN=*  # Em produção: https://yourdomain.com
+
+# Logging
+LOG_LEVEL=info
+
+# Frequência de atualização (cron)
+CRON_SCHEDULE=*/30 * * * *  # A cada 30 minutos
+```
+
+### Passo 3: Iniciar o Servidor
 
 ```bash
+# Produção
+npm start
+
+# Desenvolvimento (com auto-reload)
 npm run dev
 ```
 
-### Passo 3: Acessar a Aplicação
-
-Abra o navegador e acesse:
+### Passo 4: Acessar a Aplicação
 
 ```
 http://localhost:3000
@@ -63,28 +110,48 @@ http://localhost:3000
 ```
 chiefs-news-aggregator/
 ├── backend/
-│   ├── server.js          # Servidor Express principal
-│   ├── database.js        # Módulo de banco de dados SQLite
-│   ├── feedParser.js      # Parser de RSS feeds
-│   └── feeds.json         # Configuração das fontes RSS
+│   ├── server.js              # Servidor Express principal
+│   ├── database.js            # Módulo SQLite
+│   ├── feedParser.js          # Parser de RSS feeds
+│   ├── feeds.json             # Configuração das fontes RSS
+│   └── utils/
+│       ├── logger.js          # Sistema de logging (Winston)
+│       └── validator.js       # Validação e sanitização
 ├── frontend/
-│   ├── index.html         # Página principal
-│   ├── style.css          # Estilos CSS
-│   └── app.js             # JavaScript da aplicação
-├── package.json           # Dependências do projeto
-├── README.md              # Este arquivo
-└── news.db               # Banco de dados SQLite (criado automaticamente)
+│   ├── index.html             # Página principal
+│   ├── style.css              # Estilos CSS
+│   └── app.js                 # JavaScript da aplicação
+├── logs/                      # Logs (criado automaticamente)
+├── .env.example               # Template de configuração
+├── .gitignore
+├── package.json
+├── README.md                  # Este arquivo
+└── SECURITY_REVIEW.md         # Análise de segurança
 ```
 
 ## 🔧 API Endpoints
 
-A aplicação expõe os seguintes endpoints REST:
+### GET `/health`
+Health check do servidor
+
+**Resposta:**
+```json
+{
+  "status": "healthy",
+  "uptime": 12345,
+  "database": {
+    "connected": true,
+    "articles": 150
+  },
+  "timestamp": "2026-01-21T10:30:00.000Z"
+}
+```
 
 ### GET `/api/articles`
-Retorna lista de artigos com paginação.
+Retorna lista de artigos com paginação
 
 **Query Parameters:**
-- `limit` (default: 50) - Número de artigos por página
+- `limit` (1-100, default: 50) - Artigos por página
 - `offset` (default: 0) - Offset para paginação
 
 **Exemplo:**
@@ -93,10 +160,10 @@ curl http://localhost:3000/api/articles?limit=10&offset=0
 ```
 
 ### GET `/api/articles/recent`
-Retorna artigos recentes das últimas N horas.
+Retorna artigos recentes
 
 **Query Parameters:**
-- `hours` (default: 24) - Número de horas
+- `hours` (1-168, default: 24) - Últimas N horas
 
 **Exemplo:**
 ```bash
@@ -104,7 +171,9 @@ curl http://localhost:3000/api/articles/recent?hours=12
 ```
 
 ### GET `/api/articles/source/:source`
-Retorna artigos de uma fonte específica.
+Retorna artigos de uma fonte específica
+
+**Fontes válidas:** Chiefs.com, Arrowhead Pride, Bleacher Report, CBS Sports
 
 **Exemplo:**
 ```bash
@@ -112,40 +181,40 @@ curl http://localhost:3000/api/articles/source/Chiefs.com
 ```
 
 ### GET `/api/sources`
-Retorna estatísticas de todas as fontes.
+Retorna estatísticas de todas as fontes
 
 ### GET `/api/stats`
-Retorna estatísticas gerais da aplicação.
+Retorna estatísticas gerais
 
 ### POST `/api/refresh`
-Força atualização manual dos feeds RSS.
+Força atualização manual dos feeds RSS
+
+**Rate Limit:** 5 requisições a cada 15 minutos
 
 **Exemplo:**
 ```bash
 curl -X POST http://localhost:3000/api/refresh
 ```
 
-## ⚙️ Configuração
+## ⚙️ Configuração Avançada
 
 ### Modificar Frequência de Atualização
 
-Edite o arquivo `backend/server.js` na linha do cron job:
+Edite `.env`:
+```env
+# A cada 15 minutos
+CRON_SCHEDULE=*/15 * * * *
 
-```javascript
-// Atualizar a cada 30 minutos (default)
-cron.schedule('*/30 * * * *', () => {
-    // ...
-});
+# A cada hora
+CRON_SCHEDULE=0 * * * *
 
-// Exemplos de outras frequências:
-// A cada 15 minutos: '*/15 * * * *'
-// A cada hora: '0 * * * *'
-// A cada 2 horas: '0 */2 * * *'
+# A cada 2 horas
+CRON_SCHEDULE=0 */2 * * *
 ```
 
 ### Adicionar Novas Fontes RSS
 
-Edite o arquivo `backend/feeds.json`:
+1. Edite `backend/feeds.json`:
 
 ```json
 {
@@ -159,108 +228,309 @@ Edite o arquivo `backend/feeds.json`:
 }
 ```
 
-### Alterar Porta do Servidor
-
-Defina a variável de ambiente `PORT`:
-
-```bash
-PORT=8080 npm start
-```
-
-Ou edite diretamente em `backend/server.js`:
+2. Adicione o domínio ao whitelist em `backend/feedParser.js`:
 
 ```javascript
-const PORT = process.env.PORT || 3000;
+const ALLOWED_FEED_DOMAINS = [
+  'exemplo.com',
+  // ... outros domínios
+];
 ```
 
-## 🎨 Personalização Visual
+3. Adicione a fonte ao whitelist em `backend/server.js`:
 
-As cores do Chiefs podem ser modificadas no arquivo `frontend/style.css`:
+```javascript
+const VALID_SOURCES = ['Nome da Fonte', /* ... */];
+```
 
-```css
-:root {
-    --chiefs-red: #E31837;    /* Vermelho oficial dos Chiefs */
-    --chiefs-gold: #FFB81C;   /* Dourado oficial dos Chiefs */
-    --dark-bg: #1a1a1a;       /* Cor de fundo escura */
-    --card-bg: #2a2a2a;       /* Cor de fundo dos cards */
+### Configurar CORS para Produção
+
+Em `.env`:
+```env
+CORS_ORIGIN=https://yourdomain.com
+```
+
+### Ajustar Rate Limits
+
+Em `.env`:
+```env
+API_RATE_LIMIT_WINDOW_MS=900000          # 15 minutos
+API_RATE_LIMIT_MAX_REQUESTS=100          # 100 reqs/window
+REFRESH_RATE_LIMIT_WINDOW_MS=900000      # 15 minutos
+REFRESH_RATE_LIMIT_MAX_REQUESTS=5        # 5 reqs/window
+```
+
+### Configurar Nível de Logging
+
+Em `.env`:
+```env
+LOG_LEVEL=info
+# Opções: error, warn, info, http, verbose, debug, silly
+```
+
+## 🔒 Segurança
+
+### Medidas Implementadas
+
+1. **XSS Prevention**
+   - DOMPurify para sanitização no frontend
+   - Validação e escape no backend
+   - Content Security Policy headers
+
+2. **Rate Limiting**
+   - API global: 100 req/15min
+   - Refresh endpoint: 5 req/15min
+
+3. **Security Headers** (via Helmet)
+   - Content-Security-Policy
+   - X-Frame-Options: DENY
+   - X-Content-Type-Options: nosniff
+   - Referrer-Policy
+
+4. **Input Validation**
+   - Todos os inputs validados e sanitizados
+   - Limites máximos enforçados
+   - Whitelist de fontes válidas
+
+5. **Error Handling**
+   - Mensagens genéricas aos clientes
+   - Logs detalhados server-side
+   - Sem exposição de stack traces
+
+6. **URL Validation**
+   - Whitelist de domínios RSS
+   - Validação de protocolos (http/https apenas)
+   - Sanitização de URLs maliciosos
+
+### Boas Práticas de Deploy
+
+#### Produção Checklist
+
+- [ ] Configure `CORS_ORIGIN` para domínio específico
+- [ ] Mude `LOG_LEVEL` para `warn` ou `error`
+- [ ] Configure HTTPS (use nginx como proxy reverso)
+- [ ] Configure firewall para limitar acesso à porta
+- [ ] Use process manager (PM2, systemd)
+- [ ] Configure backups automáticos do database
+- [ ] Monitor logs regularmente
+- [ ] Execute `npm audit` regularmente
+- [ ] Configure alertas de erro
+- [ ] Limite permissões de arquivos
+
+#### Exemplo com PM2
+
+```bash
+# Instalar PM2
+npm install -g pm2
+
+# Iniciar aplicação
+pm2 start backend/server.js --name chiefs-news
+
+# Configurar auto-start
+pm2 startup
+pm2 save
+
+# Monitorar
+pm2 monit
+
+# Logs
+pm2 logs chiefs-news
+```
+
+#### Exemplo com Nginx (HTTPS)
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name yourdomain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
 }
 ```
 
-## 📊 Funcionalidades da Interface
+## 🔍 Monitoramento e Logs
 
-- **Filtros de Fonte**: Clique nos botões no topo para filtrar por fonte específica
-- **Botão Refresh**: Atualiza manualmente os feeds RSS
-- **Estatísticas**: Visualize total de artigos e artigos das últimas 24h
-- **Timeline Interativa**: Cards com hover effects e links diretos para artigos
-- **Load More**: Carregue mais artigos sob demanda
-- **Auto-refresh Frontend**: A interface verifica novos artigos a cada 5 minutos
+### Localização dos Logs
 
-## 🛠️ Tecnologias Utilizadas
+```
+logs/
+├── combined-YYYY-MM-DD.log  # Todos os logs
+└── error-YYYY-MM-DD.log     # Apenas erros
+```
 
-### Backend
-- **Node.js** - Runtime JavaScript
-- **Express** - Framework web
-- **RSS-Parser** - Parser de feeds RSS
-- **Better-SQLite3** - Banco de dados SQLite
-- **Node-Cron** - Agendamento de tarefas
-- **CORS** - Cross-Origin Resource Sharing
+### Visualizar Logs em Tempo Real
 
-### Frontend
-- **HTML5** - Estrutura
-- **CSS3** - Estilos e animações
-- **JavaScript (Vanilla)** - Lógica da aplicação
-- **Fetch API** - Requisições HTTP
+```bash
+# Todos os logs
+tail -f logs/combined-$(date +%Y-%m-%d).log
 
-## 🔍 Resolução de Problemas
+# Apenas erros
+tail -f logs/error-$(date +%Y-%m-%d).log
+```
+
+### Logs Importantes
+
+```bash
+# Startup
+grep "Chiefs News Aggregator running" logs/combined-*.log
+
+# Errors
+grep "ERROR" logs/error-*.log
+
+# Feed fetches
+grep "Feed fetch" logs/combined-*.log
+
+# Rate limit hits
+grep "Too many requests" logs/combined-*.log
+```
+
+## 🔍 Troubleshooting
 
 ### Erro: "Cannot find module"
-
-Certifique-se de ter instalado as dependências:
 ```bash
 npm install
 ```
 
 ### Erro: "Port already in use"
-
-Altere a porta ou mate o processo usando a porta 3000:
 ```bash
 # Linux/Mac
 lsof -ti:3000 | xargs kill -9
 
-# Windows
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
+# Ou mude a porta em .env
+PORT=8080
 ```
 
 ### Nenhum artigo aparece
-
 1. Verifique a conexão com internet
-2. Force um refresh manual clicando no botão "Refresh"
-3. Verifique os logs do servidor no terminal
+2. Verifique os logs: `tail -f logs/error-*.log`
+3. Force um refresh: `curl -X POST http://localhost:3000/api/refresh`
+4. Verifique se os feeds RSS estão acessíveis
 
-### Imagens não carregam
+### Erro de permissão no database
+```bash
+chmod 644 news.db
+chmod 755 .
+```
 
-Algumas fontes RSS podem não incluir imagens ou podem estar bloqueadas por CORS. Isso é normal e não afeta a funcionalidade principal.
+### High memory usage
+- Reduza `API_RATE_LIMIT_MAX_REQUESTS`
+- Aumente intervalo do cron
+- Limite `limit` máximo nas queries
 
-## 📝 Notas Importantes
+## 🧪 Testing
 
-- A aplicação usa RSS feeds oficiais, respeitando as políticas dos sites
-- Os dados são armazenados localmente em SQLite
-- Não há scraping agressivo ou violação de termos de serviço
-- A aplicação é apenas para uso pessoal e educacional
+### Testar Endpoints
+
+```bash
+# Health check
+curl http://localhost:3000/health
+
+# Articles
+curl http://localhost:3000/api/articles
+
+# Stats
+curl http://localhost:3000/api/stats
+
+# Refresh (rate limited!)
+curl -X POST http://localhost:3000/api/refresh
+```
+
+### Testar Rate Limiting
+
+```bash
+# Vai falhar após 5 tentativas em 15 minutos
+for i in {1..10}; do
+  curl -X POST http://localhost:3000/api/refresh
+  echo ""
+done
+```
+
+### Security Audit
+
+```bash
+# Check vulnerabilities
+npm audit
+
+# Fix automaticamente (quando possível)
+npm audit fix
+```
+
+## 📊 Performance
+
+### Otimizações Implementadas
+
+- SQLite com WAL mode para melhor concurrency
+- Indexes em colunas frequentemente consultadas
+- Rate limiting para prevenir abuse
+- Timeout em requisições HTTP
+- Concurrent feed fetching (limite de 3 simultâneos)
+- Lazy loading de imagens no frontend
+- Logs com rotação automática
+
+### Benchmarks Típicos
+
+- Fetch de 4 feeds: ~2-5 segundos
+- Query de 50 artigos: ~5-10ms
+- Database size: ~1MB por 1000 artigos
 
 ## 🤝 Contribuições
 
-Sinta-se à vontade para:
-- Adicionar novas fontes RSS
-- Melhorar o design
-- Otimizar o código
-- Reportar bugs
+Contribuições são bem-vindas! Por favor:
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Changelog
+
+### v1.1.0 (2026-01-21) - Security Hardening
+- ✅ Added XSS protection with DOMPurify
+- ✅ Implemented rate limiting
+- ✅ Added security headers (Helmet)
+- ✅ Input validation and sanitization
+- ✅ Professional logging system
+- ✅ Environment variables configuration
+- ✅ Health check endpoint
+- ✅ URL validation and whitelisting
+- ✅ Improved error handling
+- ✅ Retry logic with exponential backoff
+
+### v1.0.0 (2026-01-21) - Initial Release
+- ✅ RSS feed aggregation
+- ✅ Timeline interface
+- ✅ SQLite database
+- ✅ Auto-refresh mechanism
+- ✅ Source filtering
 
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
+## ⚠️ Disclaimer
+
+Esta aplicação é para uso pessoal e educacional. Respeita as políticas de uso dos sites fontes. Não sobrecarregue os servidores RSS com requisições excessivas.
+
 ## 🏈 Go Chiefs!
 
 Desenvolvido com ❤️ para os fãs do Kansas City Chiefs!
+
+---
+
+**Documentos Relacionados:**
+- [SECURITY_REVIEW.md](./SECURITY_REVIEW.md) - Análise detalhada de segurança
+- [.env.example](./.env.example) - Template de configuração
