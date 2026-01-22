@@ -1,24 +1,19 @@
 {
   "feeds": [
     {
-      "name": "Chiefs Official",
-      "url": "https://www.chiefs.com/news.rss",
-      "source": "Chiefs.com"
+      "name": "Chiefs Digest",
+      "url": "https://chiefsdigest.com/feed/",
+      "source": "Chiefs Digest"
     },
     {
-      "name": "Arrowhead Pride",
-      "url": "https://www.arrowheadpride.com/rss/current",
-      "source": "Arrowhead Pride"
+      "name": "Fox4 KC Chiefs",
+      "url": "https://fox4kc.com/sports/chiefs/feed/",
+      "source": "Fox4 KC"
     },
     {
-      "name": "Bleacher Report",
-      "url": "https://bleacherreport.com/kansas-city-chiefs/feed",
-      "source": "Bleacher Report"
-    },
-    {
-      "name": "CBS Sports",
-      "url": "https://www.cbssports.com/rss/headlines/nfl/kansas-city-chiefs/",
-      "source": "CBS Sports"
+      "name": "KSN Chiefs",
+      "url": "https://ksn.com/sports/chiefs/feed/",
+      "source": "KSN"
     }
   ]
 }

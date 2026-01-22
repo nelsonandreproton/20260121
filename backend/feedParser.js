@@ -14,7 +14,21 @@ const ALLOWED_FEED_DOMAINS = [
   'cbssports.com',
   'www.cbssports.com',
   'nfl.com',
-  'www.nfl.com'
+  'www.nfl.com',
+  'chiefsdigest.com',
+  'www.chiefsdigest.com',
+  'fox4kc.com',
+  'www.fox4kc.com',
+  'ksn.com',
+  'www.ksn.com',
+  'kshb.com',
+  'www.kshb.com',
+  'nfltraderumors.co',
+  'www.nfltraderumors.co',
+  'theguardian.com',
+  'www.theguardian.com',
+  'espn.com',
+  'www.espn.com'
 ];
 
 class FeedParser {

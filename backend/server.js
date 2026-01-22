@@ -18,7 +18,7 @@ const database = new NewsDatabase();
 const feedParser = new FeedParser(database);
 
 // Valid sources for whitelist
-const VALID_SOURCES = ['Chiefs.com', 'Arrowhead Pride', 'Bleacher Report', 'CBS Sports'];
+const VALID_SOURCES = ['Chiefs Digest', 'Fox4 KC', 'KSN'];
 
 // Security Middleware
 app.use(helmet({
