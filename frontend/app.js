@@ -73,7 +73,7 @@ async function loadArticles(append = false) {
         if (currentFilter === 'all') {
             url = `${API_BASE}/api/articles?limit=${ARTICLES_PER_PAGE}&offset=${currentOffset}`;
         } else {
-            url = `${API_BASE}/api/articles/source/${encodeURIComponent(currentFilter)}?limit=${ARTICLES_PER_PAGE}`;
+            url = `${API_BASE}/api/articles/source/${encodeURIComponent(currentFilter)}?limit=${ARTICLES_PER_PAGE}&offset=${currentOffset}`;
         }
 
         const response = await fetch(url);
@@ -275,15 +275,19 @@ function showNotification(message, type = 'success') {
 // Auto-refresh every 5 minutes
 function setupAutoRefresh() {
     setInterval(async () => {
-        console.log('Auto-refreshing articles...');
-        const response = await fetch(`${API_BASE}/api/refresh`, { method: 'POST' });
-        const data = await response.json();
+        try {
+            console.log('Auto-refreshing articles...');
+            const response = await fetch(`${API_BASE}/api/refresh`, { method: 'POST' });
+            const data = await response.json();
 
-        if (data.success && data.newArticles > 0) {
-            showNotification(`${data.newArticles} new articles available!`);
-            currentOffset = 0;
-            await loadArticles();
-            await loadStats();
+            if (data.success && data.newArticles > 0) {
+                showNotification(`${data.newArticles} new articles available!`);
+                currentOffset = 0;
+                await loadArticles();
+                await loadStats();
+            }
+        } catch (error) {
+            console.error('Auto-refresh failed:', error);
         }
     }, 5 * 60 * 1000); // 5 minutes
 }

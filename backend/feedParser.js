@@ -10,6 +10,8 @@ const ALLOWED_FEED_DOMAINS = [
   'www.chiefs.com',
   'arrowheadpride.com',
   'www.arrowheadpride.com',
+  'arrowheadaddict.com',
+  'www.arrowheadaddict.com',
   'bleacherreport.com',
   'cbssports.com',
   'www.cbssports.com',
@@ -28,7 +30,9 @@ const ALLOWED_FEED_DOMAINS = [
   'theguardian.com',
   'www.theguardian.com',
   'espn.com',
-  'www.espn.com'
+  'www.espn.com',
+  'chiefswire.usatoday.com',
+  'usatoday.com'
 ];
 
 class FeedParser {
@@ -113,7 +117,9 @@ class FeedParser {
     const title = (item.title || 'No title').substring(0, 500);
     const link = item.link || item.guid;
     const description = (item.contentSnippet || item.description || '').substring(0, 2000);
-    const pubDate = item.pubDate || item.isoDate || new Date().toISOString();
+    // Convert date to ISO format for proper sorting
+    const rawDate = item.isoDate || item.pubDate || new Date().toISOString();
+    const pubDate = new Date(rawDate).toISOString();
     const source = feedConfig.source;
     const imageUrl = this.extractImageUrl(item);
 

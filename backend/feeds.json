@@ -1,6 +1,21 @@
 {
   "feeds": [
     {
+      "name": "Arrowhead Pride",
+      "url": "https://www.arrowheadpride.com/rss/index.xml",
+      "source": "Arrowhead Pride"
+    },
+    {
+      "name": "Arrowhead Addict",
+      "url": "https://arrowheadaddict.com/feed/",
+      "source": "Arrowhead Addict"
+    },
+    {
+      "name": "ChiefsWire",
+      "url": "https://chiefswire.usatoday.com/feed/",
+      "source": "ChiefsWire"
+    },
+    {
       "name": "Chiefs Digest",
       "url": "https://chiefsdigest.com/feed/",
       "source": "Chiefs Digest"

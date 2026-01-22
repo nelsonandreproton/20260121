@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cron = require('node-cron');
 const path = require('path');
+const fs = require('fs');
 const NewsDatabase = require('./database');
 const FeedParser = require('./feedParser');
 const logger = require('./utils/logger');
@@ -17,8 +18,18 @@ const PORT = process.env.PORT || 3000;
 const database = new NewsDatabase();
 const feedParser = new FeedParser(database);
 
-// Valid sources for whitelist
-const VALID_SOURCES = ['Chiefs Digest', 'Fox4 KC', 'KSN'];
+// Load valid sources from feeds.json (single source of truth)
+const loadValidSources = () => {
+  try {
+    const feedsPath = path.join(__dirname, 'feeds.json');
+    const data = JSON.parse(fs.readFileSync(feedsPath, 'utf8'));
+    return data.feeds.map(feed => feed.source);
+  } catch (error) {
+    logger.error('Failed to load sources from feeds.json:', error);
+    return [];
+  }
+};
+const VALID_SOURCES = loadValidSources();
 
 // Security Middleware
 app.use(helmet({
@@ -26,7 +37,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
       imgSrc: ["'self'", "data:", "https:", "http:"],
       connectSrc: ["'self'"],
       fontSrc: ["'self'"],
@@ -157,8 +168,8 @@ app.get('/api/articles/source/:source', (req, res) => {
       });
     }
 
-    const limit = InputValidator.validatePagination(req.query.limit, 0).limit;
-    const articles = database.getArticlesBySource(source, limit);
+    const { limit, offset } = InputValidator.validatePagination(req.query.limit, req.query.offset);
+    const articles = database.getArticlesBySource(source, limit, offset);
 
     logger.info(`Fetched ${articles.length} articles from source: ${source}`);
 

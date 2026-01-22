@@ -1,6 +1,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
+const logger = require('./utils/logger');
 
 class NewsDatabase {
   constructor() {
@@ -14,7 +15,7 @@ class NewsDatabase {
       }
 
       this.db = new Database(dbPath, {
-        verbose: process.env.NODE_ENV === 'development' ? console.log : null
+        verbose: process.env.NODE_ENV === 'development' ? (msg) => logger.debug(msg) : null
       });
 
       // Enable WAL mode for better concurrency
@@ -22,7 +23,7 @@ class NewsDatabase {
 
       this.init();
     } catch (error) {
-      console.error('Failed to initialize database:', error);
+      logger.error('Failed to initialize database:', error);
       throw error;
     }
   }
@@ -50,9 +51,9 @@ class NewsDatabase {
         CREATE INDEX IF NOT EXISTS idx_createdAt ON articles(createdAt DESC);
       `);
 
-      console.log('Database initialized successfully');
+      logger.info('Database initialized successfully');
     } catch (error) {
-      console.error('Failed to initialize database schema:', error);
+      logger.error('Failed to initialize database schema:', error);
       throw error;
     }
   }
@@ -74,7 +75,7 @@ class NewsDatabase {
       );
       return info.changes > 0; // Returns true if inserted, false if duplicate
     } catch (error) {
-      console.error('Error inserting article:', error.message);
+      logger.error('Error inserting article:', error.message);
       return false;
     }
   }
@@ -88,14 +89,14 @@ class NewsDatabase {
     return stmt.all(limit, offset);
   }
 
-  getArticlesBySource(source, limit = 20) {
+  getArticlesBySource(source, limit = 20, offset = 0) {
     const stmt = this.db.prepare(`
       SELECT * FROM articles
       WHERE source = ?
       ORDER BY pubDate DESC
-      LIMIT ?
+      LIMIT ? OFFSET ?
     `);
-    return stmt.all(source, limit);
+    return stmt.all(source, limit, offset);
   }
 
   getRecentArticles(hours = 24) {

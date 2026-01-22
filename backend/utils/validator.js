@@ -36,12 +36,12 @@ class InputValidator {
       return null;
     }
 
-    // Sanitize the source
-    const sanitized = validator.escape(source.trim());
+    // Trim the source first
+    const trimmed = source.trim();
 
-    // Check if it's in the whitelist
-    if (validSources.includes(sanitized)) {
-      return sanitized;
+    // Check if it's in the whitelist (exact match)
+    if (validSources.includes(trimmed)) {
+      return trimmed;
     }
 
     return null;
