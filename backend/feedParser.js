@@ -30,9 +30,7 @@ const ALLOWED_FEED_DOMAINS = [
   'theguardian.com',
   'www.theguardian.com',
   'espn.com',
-  'www.espn.com',
-  'chiefswire.usatoday.com',
-  'usatoday.com'
+  'www.espn.com'
 ];
 
 class FeedParser {
